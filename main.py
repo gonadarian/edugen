@@ -21,12 +21,6 @@ def get_text_speech(text):
 
 
 def get_ssml_speech(text, phoneme):
-    # ssml = """<speak>This is a word <prosody ssml:pronunciation="baʊ">bow</prosody>.</speak>"""
-    # ssml = """<phoneme alphabet="ipa" ph="ˌmænɪˈtoʊbə">manitoba</phoneme>"""
-    # ssml = """<phoneme alphabet="ipa" ph="boʊ">bow</phoneme>"""
-    # ssml = """<speak><phoneme alphabet="ipa" ph="baʊ">bow</phoneme> and <phoneme alphabet="ipa" ph="boʊ">bow</phoneme></speak>"""
-    # ssml = """<speak>to <phoneme alphabet="ipa" ph="baʊ">bow</phoneme></speak>"""
-
     ssml = f"""<speak><phoneme alphabet="ipa" ph="{phoneme}">{text}</phoneme></speak>"""
     speech_input = {"ssml": ssml}
     return get_speech(speech_input)
@@ -116,16 +110,6 @@ def image_generate(term):
         quality="standard",
         n=1,
     )
-
-    # chat_completion = client.chat.completions.create(
-    #     messages=[
-    #         {
-    #             "role": "user",
-    #             "content": "Say this is a test",
-    #         }
-    #     ],
-    #     model="gpt-3.5-turbo",
-    # )
 
     image_url = response.data[0].url
 
