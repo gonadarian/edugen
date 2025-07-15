@@ -97,9 +97,9 @@ def image_generate(term):
 do_audio = False
 do_image = not do_audio
 use_book = "flupe"
-use_chapter = 8
-use_word = 1
-use_prompt = "kawaii_lines"
+use_chapter = 9
+use_word = 11
+use_prompt = "clip_art"
 
 
 def do():
