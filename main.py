@@ -15,24 +15,32 @@ url = "https://texttospeech.googleapis.com/v1/text:synthesize"
 mock = False
 
 
-def get_speech(text):
+def get_text_speech(text):
+    speech_input = {"text": text}
+    return get_speech(speech_input)
+
+
+def get_ssml_speech(text, phoneme):
+    # ssml = """<speak>This is a word <prosody ssml:pronunciation="baʊ">bow</prosody>.</speak>"""
+    # ssml = """<phoneme alphabet="ipa" ph="ˌmænɪˈtoʊbə">manitoba</phoneme>"""
+    # ssml = """<phoneme alphabet="ipa" ph="boʊ">bow</phoneme>"""
+    # ssml = """<speak><phoneme alphabet="ipa" ph="baʊ">bow</phoneme> and <phoneme alphabet="ipa" ph="boʊ">bow</phoneme></speak>"""
+    # ssml = """<speak>to <phoneme alphabet="ipa" ph="baʊ">bow</phoneme></speak>"""
+
+    ssml = f"""<speak><phoneme alphabet="ipa" ph="{phoneme}">{text}</phoneme></speak>"""
+    speech_input = {"ssml": ssml}
+    return get_speech(speech_input)
+
+
+def get_speech(speech_input):
     headers = {
         "Authorization": f"Bearer {token}",
         'x-goog-user-project': project,
         'Content-Type': 'application/json',
     }
 
-    ssml = """<speak>This is a word <prosody ssml:pronunciation="baʊ">bow</prosody>.</speak>"""
-    ssml = """<phoneme alphabet="ipa" ph="ˌmænɪˈtoʊbə">manitoba</phoneme>"""
-    ssml = """<phoneme alphabet="ipa" ph="boʊ">bow</phoneme>"""
-    ssml = """<speak><phoneme alphabet="ipa" ph="baʊ">bow</phoneme> and <phoneme alphabet="ipa" ph="boʊ">bow</phoneme></speak>"""
-    ssml = """<speak>to <phoneme alphabet="ipa" ph="baʊ">bow</phoneme></speak>"""
-
     payload = json.dumps({
-        "input": {
-            "text": text
-            # "ssml": ssml
-        },
+        "input": speech_input,
         "voice": {
             "languageCode": "en-gb",
             "name": "en-GB-Neural2-C",
@@ -57,12 +65,22 @@ def get_speech_mock():
 
 
 def audio_generate(text):
-    speech = get_speech_mock() if mock else get_speech(text)
+    file = text
+    if mock:
+        speech = get_speech_mock()
+    else:
+        if "|" in text:
+            parts = text.split("|")
+            speech = get_ssml_speech(parts[0], parts[1])
+            file = f"{parts[0]} ({parts[1]})"
+        else:
+            speech = get_text_speech(text)
+
     audio_content = speech['audioContent']
     print(audio_content)
 
     decoded_audio = base64.b64decode(audio_content)
-    with open(f"output/{text}.mp3", "wb") as f:
+    with open(f"output/{file}.mp3", "wb") as f:
         f.write(decoded_audio)
 
 
@@ -72,6 +90,7 @@ def image_generate(term):
     )
 
     prompt = f"A {term}. Simple drawing, few pastel colors. In kawaii style."
+
     # prompt = f"A {term} in kawaii style using pastel colors."
 
     # prompt = f"A {term}. Simple drawing, few pastel colors. In duolingo style."
@@ -119,27 +138,9 @@ do_images = not do_words
 
 if __name__ == '__main__':
     words = [
-        "zebra",
-        "zero",
-        "zigzag",
-        "lazy",
-        "boy",
-        "toy",
-        "joy",
-        "royal",
-        "oil",
-        "boil",
-        "toilet",
-        "soil",
-        "join",
-        "ring",
-        "king",
-        "wing",
-        "sing",
-        "swing",
-        "spring",
-        "string",
-        "sting",
+        "bow|baʊ",
+        "bow|boʊ",
+        "bow",
     ]
 
     if do_words:
