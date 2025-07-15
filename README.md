@@ -14,7 +14,7 @@ ERROR: (gcloud.auth.application-default.print-access-token) Your default credent
 
 > gcloud auth application-default login
 
-Credentials saved to file: [C:\Users\Igor\AppData\Roaming\gcloud\application_default_credentials.json]
+Credentials saved to file: [~\AppData\Roaming\gcloud\application_default_credentials.json]
 
 
 > gcloud auth application-default print-access-token
